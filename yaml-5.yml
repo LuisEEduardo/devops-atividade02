@@ -1,22 +1,28 @@
-name: Aplicação Python
+name: Aplicação Python # nome do workspace
 
-on: [push]
+on: [push] # Define o trigger (gatilho) que dará o start da pipeline, no caso o push
 
 jobs:
   construir:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # provisiona uma máquina, no caso uma máquina ubuntu sendo a sua última versão LTS
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2 # permite fazer o checkout (clonar) de um repositório em um ambiente de execução. Ela é utilizada para garantir que o código-fonte do repositório esteja disponível para as etapas subsequentes do fluxo de trabalho.
     - name: Configurar Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v2 # configura o ambiente do python
       with:
         python-version: 3.8
     - name: Instalar dependências
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
+      # python -m pip install --upgrade pip -> atualiza o pip
+      # pip install -r requirements.txt -> instala os pacotes detro do arquivo .txt
+
     - name: Testar com pytest
       run: |
         pytest
+
+      # roda os testes com o pytest
