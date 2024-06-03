@@ -1,21 +1,29 @@
-name: Implantar no Azure
+name: Implantar no Azure # nome do workspace
 
-on:
-  push:
-    branches:
+on: # Define o trigger (gatilho) que dará o start da pipeline
+  push: # O trigger será o push
+    branches: # somente para a branch master
       - master
 
 jobs:
   construir-e-implantar:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # provisiona uma máquina, no caso uma máquina ubuntu sendo a sua última versão LTS
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2 # permite fazer o checkout (clonar) de um repositório em um ambiente de execução. Ela é utilizada para garantir que o código-fonte do repositório esteja disponível para as etapas subsequentes do fluxo de trabalho.
 
     - name: Login via módulo Az
-      run: |
-        az login --service-principal -u ${{ secrets.AZURE_SERVICE_APP_ID }} -p ${{ secrets.AZURE_SERVICE_PASSWORD }} --tenant ${{ secrets.AZURE_SERVICE_TENANT_ID }}
-
+      run: | 
+        az login --service-principal -u ${{ secrets.AZURE_SERVICE_APP_ID }} -p ${{ secrets.AZURE_SERVICE_PASSWORD }} --tenant ${{ secrets.AZURE_SERVICE_TENANT_ID }}  
+      # az login comando base -> para autenticar no azure cli
+      # --service-principal -> indica que a autenticação será feita usando um principal de serviço
+      # -u -> especifica o ID do aplicativo
+      # -p -> especifica a senha 
+      # --tenant -> especifica o tenant do azure ad
     - name: Implantar no Azure
       run: |
         az webapp up --name <nome-do-app> --location <localização> --sku <sku>
+      # az webapp up -> comando cli para implantar no webapp do azure app service
+      # --name -> nome da aplicação 
+      # --location -> especifica em qual região a aplicação estará 
+      # --sku -> define em qual plano a aplicação estará b1, b2 e etc
