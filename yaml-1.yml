@@ -1,0 +1,26 @@
+name: CI para Node.js   # nome do workplace
+
+on:  # Define o trigger (gatilho) que dará o start da pipeline
+  push:  # 1 - quando for feito algum push
+    branches: [ master ] # especifica para a branch master
+  pull_request: # 2 - quando for feito algum pull
+    branches: [ master ] # especifica para a branch master
+
+jobs:
+  construir:
+
+    runs-on: ubuntu-latest # provisiona uma máquina, no caso uma máquina ubuntu sendo a sua última versão LTS
+
+    strategy: # permite a utilização de variaveis no workflow
+      matrix:
+        node-version: [14.x] # váriavel com a versão do node
+
+    steps: # steps para a pipeline
+    - uses: actions/checkout@v2  # permite fazer o checkout (clonar) de um repositório em um ambiente de execução. Ela é utilizada para garantir que o código-fonte do repositório esteja disponível para as etapas subsequentes do fluxo de trabalho. 
+    - name: Usar Node.js ${{ matrix.node-version }} # nome do step
+      uses: actions/setup-node@v2 # Provisiona e permite configurar o node.js no workspace
+      with:
+        node-version: ${{ matrix.node-version }} # usa á váriavel definida no strategy matrix
+    - run: npm ci # instala as dependências do projeto
+    - run: npm run build --if-present # build o projeto
+    - run: npm test # roda os testes
